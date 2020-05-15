@@ -9,8 +9,13 @@ const CollectionSchema = mongoose.Schema({
     }
 })
 
+CollectionSchema.virtual('Table', {
+    "ref": "Table",
+    "localField": "_id",
+    "foreignField": "belongsTo"
+})
 
-const Collection = mongoose.Model("Collection", CollectionSchema)
+const Collection = mongoose.model("Collection", CollectionSchema)
 
 module.exports = Collection
 

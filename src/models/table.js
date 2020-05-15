@@ -1,22 +1,6 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 
-const TableEntrySchema = mongoose.Schema({
-    "numValues": {
-        "type": Number,
-        "required": true,
-        validate(value) {
-            if (value < 1) {
-                throw new Error('Entry must have atleast 1 value')
-            }
-        }
-    },
-    "values": {
-        "type": [String]
-    }
-})
-
-
 const TableSchema = mongoose.Schema({
     "name": {
         "type": String,
@@ -29,19 +13,19 @@ const TableSchema = mongoose.Schema({
             }
         }
     },
-
-    "entries": {
-        "type": [TableEntrySchema],
-        validate(value) {
-            value.forEach((value) => {
-                if (value != this.numColumns.value) {
-                    throw new Error("Number of values in entry and number of columns in table must be the same.") 
-                }
-            })
-        }
+    "belongsTo": {
+        "type": mongoose.Schema.Types.ObjectId,
+        "required": true,
+        "ref": "Collection"
     }
 })
     
+TableSchema.virtual('tableEntry', {
+    "ref": "tableEntry",
+    "localField": "_id",
+    "foreignField": "table"
+})
+
 const Table = mongoose.model('Table', TableSchema)
 
 module.exports = Table
